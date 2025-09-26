@@ -1,0 +1,132 @@
+/* Full screen gradient cycling */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #ffb6c1, #87ceeb, #ffb6c1, #87ceeb);
+  background-size: 400% 400%;
+  animation: genderCycle 6s ease infinite;
+  color: #333;
+  transition: background 1s ease;
+}
+
+@keyframes genderCycle {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Center overlay vertically + horizontally */
+.overlay {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+h1 {
+  font-size: 4rem;
+  color: #fff;
+  margin: 0 0 20px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.8);
+}
+
+p {
+  font-size: 2rem;
+  margin: 0 0 40px;
+  color: #fefefe;
+}
+
+/* Bigger button */
+button {
+  background: linear-gradient(45deg, #ff69b4, #1e90ff);
+  color: white;
+  font-size: 2rem;
+  padding: 20px 50px;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+#reveal-container {
+  margin-top: 60px;
+}
+
+#reveal-message {
+  font-size: 5rem;
+  font-weight: bold;
+  display: none;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.boy {
+  color: #e0f7ff; /* very light blue */
+  -webkit-text-stroke: 2px #1e90ff; /* darker blue outline */
+  text-shadow: 
+    0 0 15px #1e90ff,
+    0 0 30px #1e90ff,
+    0 0 45px #fff;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 15px #fff, 0 0 25px #fff; }
+  to   { text-shadow: 0 0 30px #fff, 0 0 40px #1e90ff; }
+}
+
+/* Balloons floating */
+.balloon-container {
+  position: fixed;
+  bottom: -200px;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.balloon {
+  width: 80px;
+  height: 110px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -200px;
+  animation: float 10s ease-in infinite;
+  opacity: 0.9;
+}
+
+.blue { background: #1e90ff; left: 10%; animation-delay: 0s; }
+.pink { background: #ff69b4; left: 30%; animation-delay: 2s; }
+.yellow { background: #f9c74f; left: 50%; animation-delay: 4s; }
+.purple { background: #9d4edd; left: 70%; animation-delay: 1s; }
+.blue:nth-of-type(5) { background: #1e90ff; left: 85%; animation-delay: 3s; }
+.pink:nth-of-type(6) { background: #ff69b4; left: 15%; animation-delay: 5s; }
+.yellow:nth-of-type(7) { background: #f9c74f; left: 40%; animation-delay: 6s; }
+.purple:nth-of-type(8) { background: #9d4edd; left: 60%; animation-delay: 7s; }
+
+@keyframes float {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-130vh); }
+}
+
+/* Confetti */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}

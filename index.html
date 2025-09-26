@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gender Reveal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay">
+    <h1>🎉 A Little One is On the Way! 🎉</h1>
+    <p>Click below to reveal the surprise!</p>
+    <button onclick="revealGender()">Reveal</button>
+
+    <div id="reveal-container">
+      <div id="reveal-message"></div>
+    </div>
+  </div>
+
+  <!-- Floating balloons -->
+  <div class="balloon-container">
+    <div class="balloon blue"></div>
+    <div class="balloon pink"></div>
+    <div class="balloon yellow"></div>
+    <div class="balloon purple"></div>
+    <div class="balloon blue"></div>
+    <div class="balloon pink"></div>
+    <div class="balloon yellow"></div>
+    <div class="balloon purple"></div>
+  </div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
