@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Little One is on the Way</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay">
+    <h1>🎉 A Little One is on the Way 🎉</h1>
+    <p>Cast your vote before the big reveal!</p>
+
+    <!-- Voting Section -->
+    <div id="voting-section">
+      <button onclick="vote('boy')">Boy 💙</button>
+      <button onclick="vote('girl')">Girl 💖</button>
+      <div id="results"></div>
+    </div>
+
+    <!-- Countdown Timer -->
+    <div id="countdown"></div>
+
+    <!-- Reveal Button -->
+    <button id="reveal-btn" onclick="revealGender()" disabled>Reveal</button>
+
+    <div id="reveal-container">
+      <div id="reveal-message"></div>
+    </div>
+  </div>
+
+  <!-- Balloons -->
+  <div class="balloon-container">
+    <div class="balloon blue"></div>
+    <div class="balloon pink"></div>
+    <div class="balloon yellow"></div>
+    <div class="balloon purple"></div>
+  </div>
+
+  <!-- Confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
