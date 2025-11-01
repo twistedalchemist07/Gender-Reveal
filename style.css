@@ -28,7 +28,7 @@ body {
 
 
 .title {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   margin-bottom: 10px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   font-style: italic;           /* keeps it italic */
@@ -37,7 +37,7 @@ body {
 
 
 #timer {
-  font-size: 1.5rem;
+  font-size: 1.0rem;
   margin-bottom: 20px;
 }
 
@@ -114,4 +114,5 @@ body {
   margin-top: 50px;  /* space between button and text */
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
+
 
