@@ -2,43 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>A Little One is on the Way</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A little one is on the way</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="overlay">
-    <h1>🎉 A Little One is on the Way 🎉</h1>
-    <p>Cast your vote before the big reveal!</p>
+  <div class="container">
+    <h1 class="title">A little one is on the way</h1>
+    <div id="timer"></div>
 
-    <!-- Voting Section -->
-    <div id="voting-section">
-      <button onclick="vote('boy')">Boy 💙</button>
-      <button onclick="vote('girl')">Girl 💖</button>
-      <div id="results"></div>
+    <div class="buttons">
+      <button class="vote-btn" onclick="vote('boy')">Vote 💙 Boy</button>
+      <button class="vote-btn" onclick="vote('girl')">Vote 💖 Girl</button>
     </div>
 
-    <!-- Countdown Timer -->
-    <div id="countdown"></div>
+    <!-- Reveal button -->
+    <button id="revealBtn" disabled>Reveal</button>
 
-    <!-- Reveal Button -->
-    <button id="reveal-btn" onclick="revealGender()" disabled>Reveal</button>
-
-    <div id="reveal-container">
-      <div id="reveal-message"></div>
-    </div>
+    <canvas id="voteChart" width="200" height="200"></canvas>
+    <h2 id="revealText"></h2>
   </div>
 
-  <!-- Balloons -->
-  <div class="balloon-container">
-    <div class="balloon blue"></div>
-    <div class="balloon pink"></div>
-    <div class="balloon yellow"></div>
-    <div class="balloon purple"></div>
-  </div>
+  <canvas id="fireworks"></canvas>
 
-  <!-- Confetti -->
-  <canvas id="confetti-canvas"></canvas>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
