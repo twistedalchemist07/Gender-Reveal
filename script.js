@@ -1,9 +1,23 @@
-const revealBtn = document.getElementById("revealBtn");
-const revealText = document.getElementById("revealText");
-const timerDisplay = document.getElementById("timer");
+// =======================
+// Firebase setup
+// =======================
 const votesRef = firebase.database().ref("votes");
 
+// Initialize votes in Firebase if not present
+votesRef.once("value", (snapshot) => {
+  if (!snapshot.exists()) {
+    votesRef.set({ boy: 0, girl: 0 });
+  }
+});
+
+// =======================
+// Local user vote (prevent multiple votes per browser)
+// =======================
+let userVote = localStorage.getItem("userVote");
+
+// =======================
 // PIE CHART SETUP
+// =======================
 const ctx = document.getElementById("voteChart").getContext("2d");
 const voteChart = new Chart(ctx, {
   type: "pie",
@@ -11,7 +25,7 @@ const voteChart = new Chart(ctx, {
     labels: ["Boy 💙", "Girl 💖"],
     datasets: [
       {
-        data: [0, 0], // will update from Firebase
+        data: [0, 0], // initial data, will update from Firebase
         backgroundColor: ["#00bfff", "#ff69b4"],
       },
     ],
@@ -26,23 +40,36 @@ votesRef.on("value", (snapshot) => {
   voteChart.update();
 });
 
+// =======================
 // Voting function
+// =======================
 function vote(choice) {
   if (userVote) {
     alert("You already voted!");
     return;
   }
 
-  // Atomically increment the vote in Firebase
-  votesRef.child(choice).transaction((current) => (current || 0) + 1);
-
-  userVote = choice;
-  localStorage.setItem("userVote", userVote);
-
-  alert(`You voted for ${choice === "boy" ? "💙 Boy" : "💖 Girl"}!`);
+  // Increment vote in Firebase atomically
+  votesRef.child(choice).transaction(
+    (current) => (current || 0) + 1,
+    (error, committed) => {
+      if (error) {
+        alert("Error recording your vote. Try again.");
+      } else if (committed) {
+        userVote = choice;
+        localStorage.setItem("userVote", userVote);
+        alert(`You voted for ${choice === "boy" ? "💙 Boy" : "💖 Girl"}!`);
+      }
+    }
+  );
 }
 
-// REVEAL LOGIC
+// =======================
+// Reveal logic
+// =======================
+const revealBtn = document.getElementById("revealBtn");
+const revealText = document.getElementById("revealText");
+
 function revealGender() {
   revealText.innerHTML =
     "💙 It's a boy! 💙<br><span style='font-size:1.5rem;'>Welcome, Cloud Kori R. Quilar!</span>";
@@ -57,7 +84,36 @@ function revealGender() {
   startFireworks();
 }
 
-// CONFETTI
+// =======================
+// Timer logic
+// =======================
+const timerDisplay = document.getElementById("timer");
+const revealDate = new Date("November 9, 2025 09:00:00 GMT+0800").getTime();
+
+const countdown = setInterval(() => {
+  const now = new Date().getTime();
+  const distance = revealDate - now;
+
+  if (distance < 0) {
+    clearInterval(countdown);
+    timerDisplay.textContent = "🎉 Reveal time has come!";
+    revealBtn.disabled = false;
+    revealBtn.classList.add("active");
+    revealBtn.onclick = revealGender;
+  } else {
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    timerDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s until reveal`;
+  }
+}, 1000);
+
+// =======================
+// Confetti logic
+// =======================
 function triggerConfetti() {
   const duration = 3000;
   const end = Date.now() + duration;
@@ -81,7 +137,9 @@ function triggerConfetti() {
   })();
 }
 
-// FIREWORKS
+// =======================
+// Fireworks logic
+// =======================
 function startFireworks() {
   const canvas = document.getElementById("fireworks");
   const ctx = canvas.getContext("2d");
@@ -116,45 +174,20 @@ function startFireworks() {
   draw();
 }
 
-// TIMER — Reveal available on Nov 9, 2025 9AM (PHT)
-const revealDate = new Date("November 9, 2025 09:00:00 GMT+0800").getTime();
-
-const countdown = setInterval(() => {
-  const now = new Date().getTime();
-  const distance = revealDate - now;
-
-  if (distance < 0) {
-    clearInterval(countdown);
-    timerDisplay.textContent = "🎉 Reveal time has come!";
-    revealBtn.disabled = false;
-    revealBtn.classList.add("active");
-    revealBtn.onclick = revealGender;
-  } else {
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    timerDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s until reveal`;
-  }
-}, 1000);
-
-// BALLOONS — 10 in total, looping animation
+// =======================
+// Balloons logic
+// =======================
 const balloonContainer = document.getElementById("balloon-container");
 const numBalloons = 10;
 for (let i = 0; i < numBalloons; i++) {
   const balloon = document.createElement("div");
   balloon.classList.add("balloon");
-
   balloon.style.left = Math.random() * 100 + "vw";
   const size = Math.random() * 20 + 30;
   balloon.style.width = size + "px";
   balloon.style.height = size * 1.5 + "px";
-
   balloon.style.backgroundColor = Math.random() > 0.5 ? "blue" : "pink";
   balloon.style.animationDuration = Math.random() * 10 + 5 + "s";
   balloon.style.animationDelay = Math.random() * 10 + "s";
-
   balloonContainer.appendChild(balloon);
 }
