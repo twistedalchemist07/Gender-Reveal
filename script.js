@@ -139,4 +139,31 @@ const countdown = setInterval(() => {
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
     timerDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s until reveal`;
   }
-}, 1000);
+});
+
+const balloonContainer = document.getElementById("balloon-container");
+const numBalloons = 10; // limit to 10 balloons
+
+for (let i = 0; i < numBalloons; i++) {
+  const balloon = document.createElement("div");
+  balloon.classList.add("balloon");
+
+  // Random horizontal position
+  balloon.style.left = Math.random() * 100 + "vw";
+
+  // Random size
+  const size = Math.random() * 20 + 30; // 30px - 50px
+  balloon.style.width = size + "px";
+  balloon.style.height = size * 1.5 + "px";
+
+  // Random color
+  balloon.style.backgroundColor = Math.random() > 0.5 ? "blue" : "pink";
+
+  // Random animation duration (speed)
+  balloon.style.animationDuration = Math.random() * 10 + 5 + "s";
+
+  // Random animation delay to spread out balloons
+  balloon.style.animationDelay = Math.random() * 10 + "s";
+
+  balloonContainer.appendChild(balloon);
+}
