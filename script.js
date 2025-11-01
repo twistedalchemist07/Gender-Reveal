@@ -1,9 +1,37 @@
-/* =====================
-   VOTING SYSTEM
-===================== */
-let votes = JSON.parse(localStorage.getItem("votes")) || { boy: 0, girl: 0 };
-let userVote = localStorage.getItem("userVote");
+// Reset votes on load (fresh start)
+localStorage.removeItem("votes");
+localStorage.removeItem("userVote");
 
+let votes = { boy: 0, girl: 0 };
+let userVote = null;
+
+const revealBtn = document.getElementById("revealBtn");
+const revealText = document.getElementById("revealText");
+const timerDisplay = document.getElementById("timer");
+
+// PIE CHART SETUP
+const ctx = document.getElementById("voteChart").getContext("2d");
+const voteChart = new Chart(ctx, {
+  type: "pie",
+  data: {
+    labels: ["Boy 💙", "Girl 💖"],
+    datasets: [
+      {
+        data: [votes.boy, votes.girl],
+        backgroundColor: ["#00bfff", "#ff69b4"],
+      },
+    ],
+  },
+  options: { responsive: false },
+});
+
+// Update chart
+function updateChart() {
+  voteChart.data.datasets[0].data = [votes.boy, votes.girl];
+  voteChart.update();
+}
+
+// Voting
 function vote(choice) {
   if (userVote) {
     alert("You already voted!");
@@ -11,128 +39,104 @@ function vote(choice) {
   }
   votes[choice]++;
   userVote = choice;
-  localStorage.setItem("votes", JSON.stringify(votes));
-  localStorage.setItem("userVote", choice);
-  updateResults();
+  updateChart();
+  alert(`You voted for ${choice === "boy" ? "💙 Boy" : "💖 Girl"}!`);
 }
 
-function updateResults() {
-  const total = votes.boy + votes.girl;
-  const boyPercent = total ? ((votes.boy / total) * 100).toFixed(1) : 0;
-  const girlPercent = total ? ((votes.girl / total) * 100).toFixed(1) : 0;
-  document.getElementById("results").innerHTML =
-    `💙 Boy: ${boyPercent}% (${votes.boy}) | 💖 Girl: ${girlPercent}% (${votes.girl})`;
+// REVEAL LOGIC
+function revealGender() {
+  revealText.innerHTML =
+    "💙 It's a boy! 💙<br><span style='font-size:1.5rem;'>Welcome, Cloud Kori R. Quilar!</span>";
+  document.body.style.background = "#87CEEB";
+  document
+    .querySelectorAll(".vote-btn")
+    .forEach((btn) => (btn.disabled = true));
+  revealBtn.disabled = true;
+  revealBtn.classList.remove("active");
+  revealBtn.style.backgroundColor = "gray";
+  triggerConfetti();
+  startFireworks();
 }
 
-updateResults();
+// CONFETTI
+function triggerConfetti() {
+  const duration = 3000;
+  const end = Date.now() + duration;
+  const colors = ["#bb0000", "#ffffff", "#0000ff"];
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors,
+    });
+    confetti({
+      particleCount: 5,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors,
+    });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
 
-/* =====================
-   COUNTDOWN TIMER
-===================== */
-const revealDate = new Date("Nov 9, 2025 00:00:00").getTime();
-const countdownEl = document.getElementById("countdown");
-const revealBtn = document.getElementById("reveal-btn");
+// FIREWORKS
+function startFireworks() {
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
 
-const timer = setInterval(() => {
+  for (let i = 0; i < 100; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      speedX: Math.random() * 6 - 3,
+      speedY: Math.random() * 6 - 3,
+      radius: Math.random() * 3 + 1,
+      alpha: 1,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p) => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+      ctx.fill();
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.alpha -= 0.01;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// TIMER — Reveal available on Nov 9, 2025 5PM (PHT)
+const revealDate = new Date("November 9, 2025 17:00:00 GMT+0800").getTime();
+
+const countdown = setInterval(() => {
   const now = new Date().getTime();
   const distance = revealDate - now;
 
-  if (distance <= 0) {
-    clearInterval(timer);
-    countdownEl.innerHTML = "🎉 The moment has arrived! 🎉";
+  if (distance < 0) {
+    clearInterval(countdown);
+    timerDisplay.textContent = "🎉 Reveal time has come!";
     revealBtn.disabled = false;
-    document.body.style.animation = "none"; // stop gradient cycle
-    document.body.style.background = "#1e90ff"; // blue background for boy
+    revealBtn.classList.add("active");
+    revealBtn.onclick = revealGender;
   } else {
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    countdownEl.innerHTML = 
-      `⏳ Reveal in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    timerDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s until reveal`;
   }
 }, 1000);
-
-/* =====================
-   GENDER REVEAL
-===================== */
-function revealGender() {
-  const revealDiv = document.getElementById("reveal-message");
-
-  revealDiv.textContent = "It's a Boy! 👶💙";
-  revealDiv.className = "boy";
-  revealDiv.style.display = "block";
-
-  startConfetti();
-}
-
-/* =====================
-   CONFETTI ANIMATION
-===================== */
-const canvas = document.getElementById("confetti-canvas");
-const ctx = canvas.getContext("2d");
-let W = window.innerWidth;
-let H = window.innerHeight;
-canvas.width = W;
-canvas.height = H;
-
-window.addEventListener("resize", () => {
-  W = window.innerWidth;
-  H = window.innerHeight;
-  canvas.width = W;
-  canvas.height = H;
-});
-
-let confetti = [];
-const confettiCount = 200;
-
-function randomColor() {
-  const colors = ["#1e90ff", "#ff69b4", "#f9c74f", "#90be6d", "#f94144"];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
-
-function ConfettiPiece() {
-  this.x = Math.random() * W;
-  this.y = Math.random() * H - H;
-  this.r = Math.random() * 6 + 4;
-  this.d = Math.random() * confettiCount;
-  this.color = randomColor();
-  this.tilt = Math.floor(Math.random() * 10) - 10;
-}
-
-function drawConfetti() {
-  ctx.clearRect(0, 0, W, H);
-  confetti.forEach((c) => {
-    ctx.beginPath();
-    ctx.lineWidth = c.r;
-    ctx.strokeStyle = c.color;
-    ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
-    ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
-    ctx.stroke();
-  });
-  updateConfetti();
-}
-
-function updateConfetti() {
-  confetti.forEach((c, i) => {
-    c.y += Math.cos(c.d) + 1 + c.r / 2;
-    c.x += Math.sin(c.d);
-    if (c.y > H) {
-      confetti[i] = new ConfettiPiece();
-      confetti[i].x = Math.random() * W;
-      confetti[i].y = -10;
-    }
-  });
-}
-
-function startConfetti() {
-  confetti = [];
-  for (let i = 0; i < confettiCount; i++) {
-    confetti.push(new ConfettiPiece());
-  }
-  (function animate() {
-    requestAnimationFrame(animate);
-    drawConfetti();
-  })();
-}
