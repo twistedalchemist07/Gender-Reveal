@@ -1,9 +1,6 @@
-// Reset votes on load (fresh start)
-localStorage.removeItem("votes");
-localStorage.removeItem("userVote");
-
-let votes = { boy: 0, girl: 0 };
-let userVote = null;
+// Load votes from localStorage or initialize
+let votes = JSON.parse(localStorage.getItem("votes")) || { boy: 0, girl: 0 };
+let userVote = localStorage.getItem("userVote"); // stores if user already voted
 
 const revealBtn = document.getElementById("revealBtn");
 const revealText = document.getElementById("revealText");
@@ -31,6 +28,9 @@ function updateChart() {
   voteChart.update();
 }
 
+// Initial chart update
+updateChart();
+
 // Voting
 function vote(choice) {
   if (userVote) {
@@ -39,6 +39,11 @@ function vote(choice) {
   }
   votes[choice]++;
   userVote = choice;
+
+  // Save votes and userVote to localStorage
+  localStorage.setItem("votes", JSON.stringify(votes));
+  localStorage.setItem("userVote", userVote);
+
   updateChart();
   alert(`You voted for ${choice === "boy" ? "💙 Boy" : "💖 Girl"}!`);
 }
@@ -117,7 +122,7 @@ function startFireworks() {
   draw();
 }
 
-// TIMER — Reveal available on Nov 9, 2025 5PM (PHT)
+// TIMER — Reveal available on Nov 9, 2025 9AM (PHT)
 const revealDate = new Date("November 9, 2025 09:00:00 GMT+0800").getTime();
 
 const countdown = setInterval(() => {
@@ -139,30 +144,22 @@ const countdown = setInterval(() => {
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
     timerDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s until reveal`;
   }
-});
+}, 1000);
 
+// BALLOONS — 10 in total, looping animation
 const balloonContainer = document.getElementById("balloon-container");
-const numBalloons = 10; // limit to 10 balloons
-
+const numBalloons = 10;
 for (let i = 0; i < numBalloons; i++) {
   const balloon = document.createElement("div");
   balloon.classList.add("balloon");
 
-  // Random horizontal position
   balloon.style.left = Math.random() * 100 + "vw";
-
-  // Random size
-  const size = Math.random() * 20 + 30; // 30px - 50px
+  const size = Math.random() * 20 + 30;
   balloon.style.width = size + "px";
   balloon.style.height = size * 1.5 + "px";
 
-  // Random color
   balloon.style.backgroundColor = Math.random() > 0.5 ? "blue" : "pink";
-
-  // Random animation duration (speed)
   balloon.style.animationDuration = Math.random() * 10 + 5 + "s";
-
-  // Random animation delay to spread out balloons
   balloon.style.animationDelay = Math.random() * 10 + "s";
 
   balloonContainer.appendChild(balloon);
