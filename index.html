@@ -6,44 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A little one is on the way</title>
   <link rel="stylesheet" href="style.css">
-</head>
 
-
-<body>
-  <div class="container">
-    <!-- <h1 class="title">🎉 A little one is on the way 🎉</h1> -->
-    <h1 class="title">A little one is on the way!</h1>
-
-    <div id="timer"></div>
-    <!-- Add in <head> -->
-
-    <!-- Reveal button now directly below timer -->
-    <button id="revealBtn" disabled>Reveal</button>
-
-    <!-- New instruction text -->
-    <p id="voteHint">Cast your vote before the big day!</p>
-
-    <div class="buttons">
-      <button class="vote-btn" onclick="vote('boy')">Vote 💙 Boy</button>
-      <button class="vote-btn" onclick="vote('girl')">Vote 💖 Girl</button>
-    </div>
-
-    <canvas id="voteChart" width="200" height="200"></canvas>
-    <h2 id="revealText"></h2>
-  </div>
-
-  <div id="balloon-container"></div>
-
-  <canvas id="fireworks"></canvas>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDK (Compat version for browser) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase configuration
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAyQj0boy1BAjaiUHiCr_fXqLAQ4uX8-wU",
       authDomain: "gender-reveal-c7f88.firebaseapp.com",
@@ -54,11 +23,44 @@
       appId: "1:693274590309:web:cba720198c3a4a543f1a8c",
       measurementId: "G-4TX6J7E045"
     };
-
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   </script>
+</head>
 
+<body>
+  <div class="container">
+    <h1 class="title">🎉 A little one is on the way 🎉</h1>
+
+    <div id="timer"></div>
+
+    <!-- Reveal button -->
+    <button id="revealBtn" disabled>Reveal</button>
+
+    <!-- Voting instructions -->
+    <p id="voteHint">Cast your vote before the big day!</p>
+
+    <!-- Vote buttons -->
+    <div class="buttons">
+      <button class="vote-btn" onclick="vote('boy')">Vote 💙 Boy</button>
+      <button class="vote-btn" onclick="vote('girl')">Vote 💖 Girl</button>
+    </div>
+
+    <!-- Pie chart -->
+    <canvas id="voteChart" width="200" height="200"></canvas>
+
+    <!-- Reveal text -->
+    <h2 id="revealText"></h2>
+  </div>
+
+  <div id="balloon-container"></div>
+  <canvas id="fireworks"></canvas>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Your script with Firebase voting -->
   <script src="script.js"></script>
 </body>
 
