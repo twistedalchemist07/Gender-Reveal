@@ -1,10 +1,7 @@
-// Load votes from localStorage or initialize
-let votes = JSON.parse(localStorage.getItem("votes")) || { boy: 0, girl: 0 };
-let userVote = localStorage.getItem("userVote"); // stores if user already voted
-
 const revealBtn = document.getElementById("revealBtn");
 const revealText = document.getElementById("revealText");
 const timerDisplay = document.getElementById("timer");
+const votesRef = firebase.database().ref("votes");
 
 // PIE CHART SETUP
 const ctx = document.getElementById("voteChart").getContext("2d");
@@ -14,7 +11,7 @@ const voteChart = new Chart(ctx, {
     labels: ["Boy 💙", "Girl 💖"],
     datasets: [
       {
-        data: [votes.boy, votes.girl],
+        data: [0, 0], // will update from Firebase
         backgroundColor: ["#00bfff", "#ff69b4"],
       },
     ],
@@ -22,29 +19,26 @@ const voteChart = new Chart(ctx, {
   options: { responsive: false },
 });
 
-// Update chart
-function updateChart() {
+// Listen for real-time vote changes
+votesRef.on("value", (snapshot) => {
+  const votes = snapshot.val() || { boy: 0, girl: 0 };
   voteChart.data.datasets[0].data = [votes.boy, votes.girl];
   voteChart.update();
-}
+});
 
-// Initial chart update
-updateChart();
-
-// Voting
+// Voting function
 function vote(choice) {
   if (userVote) {
     alert("You already voted!");
     return;
   }
-  votes[choice]++;
-  userVote = choice;
 
-  // Save votes and userVote to localStorage
-  localStorage.setItem("votes", JSON.stringify(votes));
+  // Atomically increment the vote in Firebase
+  votesRef.child(choice).transaction((current) => (current || 0) + 1);
+
+  userVote = choice;
   localStorage.setItem("userVote", userVote);
 
-  updateChart();
   alert(`You voted for ${choice === "boy" ? "💙 Boy" : "💖 Girl"}!`);
 }
 
