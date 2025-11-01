@@ -118,7 +118,7 @@ function startFireworks() {
 }
 
 // TIMER — Reveal available on Nov 9, 2025 5PM (PHT)
-const revealDate = new Date("November 9, 2025 17:00:00 GMT+0800").getTime();
+const revealDate = new Date("November 9, 2025 09:00:00 GMT+0800").getTime();
 
 const countdown = setInterval(() => {
   const now = new Date().getTime();
