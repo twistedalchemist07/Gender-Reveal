@@ -111,7 +111,7 @@ body {
 #voteHint {
   color: white;
   font-size: 1.2rem;
-  margin-top: 30px;  /* space between button and text */
+  margin-top: 10px;  /* space between button and text */
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
@@ -144,6 +144,7 @@ body {
     opacity: 1;
   }
 }
+
 
 
 
