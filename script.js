@@ -88,7 +88,7 @@ function revealGender() {
 // Timer logic
 // =======================
 const timerDisplay = document.getElementById("timer");
-const revealDate = new Date("November 9, 2025 09:00:00 GMT+0800").getTime();
+const revealDate = new Date("November 9, 2025 15:00:00 GMT+0800").getTime();
 
 const countdown = setInterval(() => {
   const now = new Date().getTime();
@@ -191,3 +191,4 @@ for (let i = 0; i < numBalloons; i++) {
   balloon.style.animationDelay = Math.random() * 10 + "s";
   balloonContainer.appendChild(balloon);
 }
+
